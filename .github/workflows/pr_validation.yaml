@@ -22,13 +22,14 @@ jobs:
       - name: Verify Fragment Existence
         if: steps.check_label.outputs.skip != 'true'
         run: |
+          # Look for added files in the .changelog/unreleased/ directory.
           CHANGED_FILES=$(git diff --name-only --diff-filter=A origin/main...HEAD | grep ".changelog/unreleased/" || true)
 
           if [ -z "$CHANGED_FILES" ]; then
-            echo "Error: No new changelog fragment found in .changelog/unreleased/"
-            echo "Please create a file like '.changelog/unreleased/my-change.feature.md'"
+            echo "Error: No new changelog fragment found in .changelog/unreleased/."
+            echo "Please create a file like '.changelog/unreleased/my-change.feature.md'."
             exit 1
           else
-            echo "Success: Found changelog fragment(s):"
+            echo "Success: Found changelog fragment(s)."
             echo "$CHANGED_FILES"
           fi

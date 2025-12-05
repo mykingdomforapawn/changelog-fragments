@@ -1,7 +1,7 @@
 name: Release
 
 on:
-  workflow_dispatch: # You still click the button, but no typing needed
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -18,16 +18,15 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Generate Changelog & Cleanup
-        # WE CHANGE THIS LINE 👇
-        # We use 'v' + the automatic run number (e.g., v1, v2, v35)
+      - name: Generate Changelog and Cleanup
         run: |
           python .github/scripts/release_changelog.py v${{ github.run_number }}
 
-      - name: Commit & Push Changes
+      - name: Commit and Push Changes
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          # Stage the CHANGELOG and the deletion of fragments.
           git add CHANGELOG.md .changelog/unreleased/
           git commit -m "chore: release v${{ github.run_number }}"
           git push
@@ -35,7 +34,6 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          # Tag and Name use the same automatic number
           tag_name: v${{ github.run_number }}
           name: v${{ github.run_number }}
           body_path: release_body.txt
