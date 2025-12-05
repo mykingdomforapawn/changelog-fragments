@@ -38,3 +38,8 @@ components:
           example: "Living Room Lamp"
         is_on:
           type: boolean
+        brightness:
+          type: integer
+          minimum: 0
+          maximum: 100
+          description: "The brightness level of the light."
