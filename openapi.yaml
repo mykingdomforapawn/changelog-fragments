@@ -21,6 +21,27 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Device'
+  /devices/{deviceId}:
+    get:
+      summary: Get a specific device
+      description: Returns the details of a single device by its ID.
+      operationId: getDeviceById
+      parameters:
+        - name: deviceId
+          in: path
+          required: true
+          description: The ID of the device to retrieve.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The device details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Device'
+        '404':
+          description: Device not found.
 
 components:
   schemas:
