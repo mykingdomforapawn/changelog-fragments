@@ -1,0 +1,34 @@
+name: PR Validation
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+
+jobs:
+  check-fragment:
+    name: Validate Changelog Fragment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for 'skip-changelog' label
+        id: check_label
+        if: contains(github.event.pull_request.labels.*.name, 'skip-changelog')
+        run: echo "skip=true" >> $GITHUB_OUTPUT
+
+      - name: Verify Fragment Existence
+        if: steps.check_label.outputs.skip != 'true'
+        run: |
+          CHANGED_FILES=$(git diff --name-only --diff-filter=A origin/main...HEAD | grep ".changelog/unreleased/" || true)
+
+          if [ -z "$CHANGED_FILES" ]; then
+            echo "Error: No new changelog fragment found in .changelog/unreleased/"
+            echo "Please create a file like '.changelog/unreleased/my-change.feature.md'"
+            exit 1
+          else
+            echo "Success: Found changelog fragment(s):"
+            echo "$CHANGED_FILES"
+          fi

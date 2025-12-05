@@ -1,0 +1,40 @@
+openapi: 3.0.3
+info:
+  title: Smart Home API
+  description: API for controlling lights and thermostats.
+  version: 0.0.1
+servers:
+  - url: https://api.mysmarthome.com/v1
+
+paths:
+  /devices:
+    get:
+      summary: List all devices
+      description: Returns a list of all smart devices connected to the hub.
+      operationId: getDevices
+      responses:
+        '200':
+          description: A list of devices.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Device'
+
+components:
+  schemas:
+    Device:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "light-bulb-01"
+        type:
+          type: string
+          enum: [light, thermostat]
+        name:
+          type: string
+          example: "Living Room Lamp"
+        is_on:
+          type: boolean
